@@ -1,39 +1,8 @@
-name: Anchor Tests
-
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-env:
-  CARGO_TERM_COLOR: always
-
+name: example-workflow
+on: [push]
 jobs:
   run-anchor-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-
-      - name: Install libssl1.1
-        run: |
-          sudo apt-get update
-          wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-
-      - name: Install Solana
-        run: |
-          sudo apt-get update
-          SOLANA_VERSION=1.14.16
-          sh -c "$(curl -sSfL https://release.solana.com/v$SOLANA_VERSION/install)"
-          echo "$HOME/.local/share/solana/install/releases/$SOLANA_VERSION/solana-release/bin" >> $GITHUB_PATH
-
-      - name: Install Anchor
-        run: |
-          cargo install --git https://github.com/coral-xyz/anchor avm --locked
-          avm install 0.27.0
-          avm use 0.27.0
-          echo "$HOME/.avm/bin" >> $GITHUB_PATH
-
-      - name: Run Anchor Tests
-        run: anchor test
+      - uses: metadaoproject/anchor-test@v2
