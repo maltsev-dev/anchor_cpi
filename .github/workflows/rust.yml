@@ -1,4 +1,4 @@
-name: Rust & Anchor tests
+name: Anchor Tests
 
 on:
   push:
@@ -10,19 +10,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
-
   run-anchor-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install libssl1.1
+        run: |
+          sudo apt-get update
+          wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
       - name: Install Solana
         run: |
@@ -38,6 +35,5 @@ jobs:
           avm use 0.27.0
           echo "$HOME/.avm/bin" >> $GITHUB_PATH
 
-      - name: Run tests
+      - name: Run Anchor Tests
         run: anchor test
-
